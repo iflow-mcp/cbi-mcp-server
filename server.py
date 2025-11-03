@@ -14,7 +14,14 @@ CLIENT_SECRET = os.getenv("CBI_CLIENT_SECRET")
 TIMEOUT = float(os.getenv("CBI_MCP_TIMEOUT", 120))
 API_BASE = "https://api.cbinsights.com/v2"
 
+# Validate required environment variables
+if not CLIENT_ID or not CLIENT_SECRET:
+    print(f"Warning: Missing required environment variables. CBI_CLIENT_ID={'set' if CLIENT_ID else 'not set'}, CBI_CLIENT_SECRET={'set' if CLIENT_SECRET else 'not set'}", file=sys.stderr)
+
 def get_auth_token() -> str:
+    if not CLIENT_ID or not CLIENT_SECRET:
+        raise Exception("Missing required environment variables: CBI_CLIENT_ID and CBI_CLIENT_SECRET must be set")
+
     url = f"{API_BASE}/authorize"
     payload = {
         "clientId": CLIENT_ID,
@@ -61,7 +68,7 @@ async def handle_request(request):
             },
             "serverInfo": {
                 "name": "cbi-mcp-server",
-                "version": "0.1.0"
+                "version": "0.1.1"
             }
         }
 
